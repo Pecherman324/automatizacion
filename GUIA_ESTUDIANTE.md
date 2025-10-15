@@ -57,8 +57,19 @@ puppet --version
 
 #### **En Windows:**
 ```cmd
-# Ejecutar el archivo de instalación
-install.bat
+# IMPORTANTE: Ejecutar PowerShell como Administrador
+# 1. Clic derecho en PowerShell → "Ejecutar como administrador"
+# 2. Navegar al proyecto
+cd C:\xampp\htdocs\puppet
+
+# 3. Ejecutar el archivo de instalación
+.\install.bat
+
+# 4. Si hay problemas, refrescar el entorno
+refreshenv
+
+# 5. Verificar instalación
+puppet --version
 ```
 
 ### **PASO 2: Tu Primer Manifiesto (20 minutos)**
@@ -66,7 +77,9 @@ install.bat
 #### **¿Qué es un manifiesto?**
 Un manifiesto es como una **receta de cocina** para tu servidor. Le dices a Puppet exactamente qué quieres que haga.
 
-#### **Vamos a ver el archivo `apache.pp`:**
+#### **Vamos a ver el archivo `apache.pp` (Linux) y `apache_simple.pp` (Windows):**
+
+**Para Linux:**
 ```puppet
 class apache_example {
   # 1️⃣ Instalar Apache
@@ -96,18 +109,68 @@ class apache_example {
 include apache_example
 ```
 
+**Para Windows (con XAMPP):**
+```puppet
+class apache_simple {
+  # Crear una página web personalizada en XAMPP
+  file { 'C:/xampp/htdocs/index.html':
+    ensure  => file,
+    content => "<!DOCTYPE html>
+<html lang='es'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Mi servidor Puppet</title>
+    <style>
+        body { font-family: Arial; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .container { background: white; padding: 40px; border-radius: 15px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <h1>¡Configurado automáticamente con Puppet!</h1>
+        <p>Servidor: Apache HTTP Server (XAMPP)</p>
+        <p>Estado: ✅ Funcionando correctamente</p>
+    </div>
+</body>
+</html>",
+  }
+}
+
+# Aplicar la clase
+include apache_simple
+```
+
 #### **¡Ahora vamos a ejecutarlo!**
+
+**Para Linux:**
 ```bash
 sudo puppet apply apache.pp
 ```
 
+**Para Windows:**
+```cmd
+puppet apply apache_simple.pp
+```
+
 #### **🎉 ¡MAGIA! Verifica el resultado:**
+
+**Para Linux:**
 ```bash
 # Verificar que Apache está funcionando
 sudo systemctl status apache2
 
 # Probar la página web
 curl http://localhost
+```
+
+**Para Windows:**
+```cmd
+# Verificar que el archivo se creó
+dir C:\xampp\htdocs\index.html
+
+# Probar la página web
+curl http://localhost/index.html
+# O abrir en el navegador: http://localhost/index.html
 ```
 
 ### **PASO 3: Módulo Avanzado (25 minutos)**
@@ -198,8 +261,11 @@ Agrega un nuevo directorio en `/var/www/html/mi-carpeta/` con permisos específi
 
 ### **Problema: "Permission denied"**
 ```bash
-# Solución: Usar sudo
+# Solución: Usar sudo (Linux) o ejecutar como administrador (Windows)
+# Linux:
 sudo puppet apply apache.pp
+
+# Windows: Ejecutar PowerShell como administrador
 ```
 
 ### **Problema: "Package not found"**
@@ -209,24 +275,45 @@ sudo puppet apply apache.pp
 package { 'httpd':
   ensure => installed,
 }
+
+# En Windows, usar el manifiesto apache_simple.pp que no instala paquetes
 ```
 
 ### **Problema: "Service won't start"**
 ```bash
-# Verificar el estado
+# Linux: Verificar el estado
 sudo systemctl status apache2
 
-# Ver logs de error
+# Linux: Ver logs de error
 sudo journalctl -u apache2
+
+# Windows: Verificar que XAMPP esté funcionando
+# Abrir Panel de Control de XAMPP
 ```
 
 ### **Problema: "Port already in use"**
 ```bash
-# Ver qué está usando el puerto 80
+# Linux: Ver qué está usando el puerto 80
 sudo netstat -tlnp | grep :80
 
-# Detener otros servicios web
+# Linux: Detener otros servicios web
 sudo systemctl stop nginx
+
+# Windows: Verificar que XAMPP Apache esté iniciado
+```
+
+### **Problema: "Puppet command not found" (Windows)**
+```cmd
+# Solución: Refrescar el entorno después de la instalación
+refreshenv
+
+# O reiniciar PowerShell como administrador
+```
+
+### **Problema: "Invalid package provider 'chocolatey'"**
+```cmd
+# Solución: Usar el manifiesto apache_simple.pp que no requiere proveedores especiales
+puppet apply apache_simple.pp
 ```
 
 ---
