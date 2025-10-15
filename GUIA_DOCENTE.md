@@ -95,17 +95,59 @@ Enseñar a los estudiantes los fundamentos de la automatización de infraestruct
 
 ### **FASE 2: PRÁCTICA GUIADA (60-90 min)**
 
-#### **Paso 1: Preparación del Entorno (15 min)**
+#### **Paso 1: Preparación del Entorno (15 min) - INSTRUCCIONES ESPECÍFICAS PARA EL DOCENTE**
+
+**PARA ESTUDIANTES CON LINUX:**
 ```bash
 # Los estudiantes ejecutan:
 chmod +x install.sh
 ./install.sh
 ```
 
-#### **Paso 2: Primer Manifiesto (20 min)**
+**PARA ESTUDIANTES CON WINDOWS - INSTRUCCIONES DETALLADAS:**
+```cmd
+# PASO 1: Verificar que XAMPP esté instalado
+# Los estudiantes deben tener XAMPP instalado en C:\xampp\
+# Si no lo tienen, dirigirlos a: https://www.apachefriends.org/
+
+# PASO 2: Abrir PowerShell como administrador
+# Enfatizar la importancia de ejecutar como administrador
+# Mostrar cómo hacer clic derecho en PowerShell
+
+# PASO 3: Navegar al proyecto
+cd C:\xampp\htdocs\puppet
+
+# PASO 4: Ejecutar instalación
+.\install_windows_fixed.bat
+
+# PASO 5: Si hay problemas
+refreshenv
+```
+
+**PUNTOS CLAVE PARA EL DOCENTE:**
+- ✅ Verificar que todos los estudiantes tienen XAMPP instalado
+- ✅ Enfatizar la importancia de ejecutar PowerShell como administrador
+- ✅ Tener preparado el archivo `SOLUCION_PROBLEMAS.md` para consulta rápida
+- ✅ Usar `apache_simple.pp` para estudiantes con Windows
+
+#### **Paso 2: Primer Manifiesto (20 min) - INSTRUCCIONES ESPECÍFICAS PARA EL DOCENTE**
+
+**PARA ESTUDIANTES CON LINUX:**
 - Explicar `apache.pp` línea por línea
 - Ejecutar: `sudo puppet apply apache.pp`
 - Verificar resultado: `curl http://localhost`
+
+**PARA ESTUDIANTES CON WINDOWS:**
+- Explicar `apache_simple.pp` línea por línea
+- Enfatizar que NO instala paquetes, solo crea archivos
+- Ejecutar: `puppet apply apache_simple.pp`
+- Verificar resultado: `curl http://localhost/index.html`
+
+**PUNTOS CLAVE PARA EL DOCENTE:**
+- ✅ Usar el manifiesto correcto según el sistema operativo
+- ✅ Explicar por qué `apache_simple.pp` es diferente
+- ✅ Verificar que XAMPP esté funcionando antes de aplicar el manifiesto
+- ✅ Mostrar cómo abrir el Panel de Control de XAMPP
 
 #### **Paso 3: Módulo Avanzado (25 min)**
 - Explorar la estructura del módulo
@@ -180,39 +222,68 @@ Agregar un nuevo recurso (ej: crear un directorio adicional)
 
 ## 🚨 TROUBLESHOOTING COMÚN
 
-### **Problemas Frecuentes y Soluciones**
+### **Problemas Frecuentes y Soluciones - GUÍA ESPECÍFICA PARA EL DOCENTE**
 
 #### **1. Error de Permisos**
 ```bash
-# Problema: Permission denied
+# Linux: Permission denied
 # Solución: Usar sudo
 sudo puppet apply apache.pp
+
+# Windows: Access denied
+# Solución: Ejecutar PowerShell como administrador
+# Verificar que la ventana dice "Administrador: Windows PowerShell"
 ```
 
 #### **2. Paquete No Encontrado**
 ```bash
-# Problema: Package 'apache2' not found
+# Linux: Package 'apache2' not found
 # Solución: Verificar nombre del paquete según distribución
 # Ubuntu/Debian: apache2
 # CentOS/RHEL: httpd
+
+# Windows: Invalid package provider 'chocolatey'
+# Solución: Usar apache_simple.pp en lugar de apache.pp
+puppet apply apache_simple.pp
 ```
 
 #### **3. Servicio No Inicia**
 ```bash
-# Verificar estado del servicio
+# Linux: Verificar estado del servicio
 sudo systemctl status apache2
-
-# Ver logs de error
 sudo journalctl -u apache2
+
+# Windows: Verificar XAMPP
+# Abrir XAMPP Control Panel
+# Verificar que Apache esté en "Running" (verde)
+# Si no está corriendo, hacer clic en "Start"
 ```
 
 #### **4. Puerto Ocupado**
 ```bash
-# Verificar qué está usando el puerto 80
+# Linux: Verificar qué está usando el puerto 80
 sudo netstat -tlnp | grep :80
-
-# Detener otros servicios web si es necesario
 sudo systemctl stop nginx
+
+# Windows: Verificar XAMPP Control Panel
+# Detener otros servicios web si es necesario
+```
+
+#### **5. "Puppet command not found" (Windows)**
+```cmd
+# Solución paso a paso:
+refreshenv
+# Si no funciona, reiniciar PowerShell como administrador
+# Si aún no funciona, reinstalar: .\install_windows_fixed.bat
+```
+
+#### **6. La página web no se muestra**
+```cmd
+# Windows: Verificar que el archivo se creó
+dir C:\xampp\htdocs\index.html
+
+# Verificar que XAMPP está funcionando
+# Probar diferentes URLs: http://localhost/index.html
 ```
 
 ---

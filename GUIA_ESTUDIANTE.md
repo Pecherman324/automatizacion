@@ -55,21 +55,62 @@ chmod +x install.sh
 puppet --version
 ```
 
-#### **En Windows:**
+#### **En Windows - PASO A PASO DETALLADO:**
+
+**PASO 1: Abrir PowerShell como Administrador**
+1. Presiona la tecla **Windows** en tu teclado
+2. Escribe: `PowerShell`
+3. **NO presiones Enter todavía**
+4. Verás que aparece "Windows PowerShell" en los resultados
+5. **Haz clic derecho** sobre "Windows PowerShell"
+6. Selecciona **"Ejecutar como administrador"**
+7. Aparecerá una ventana azul que dice "Administrador: Windows PowerShell"
+8. Si te pregunta "¿Permitir que esta aplicación haga cambios?", haz clic en **"Sí"**
+
+**PASO 2: Navegar al Proyecto**
 ```cmd
-# IMPORTANTE: Ejecutar PowerShell como Administrador
-# 1. Clic derecho en PowerShell → "Ejecutar como administrador"
-# 2. Navegar al proyecto
+# Escribe exactamente esto (copia y pega):
 cd C:\xampp\htdocs\puppet
 
-# 3. Ejecutar el archivo de instalación
-.\install.bat
+# Presiona Enter
+# Deberías ver: PS C:\xampp\htdocs\puppet>
+```
 
-# 4. Si hay problemas, refrescar el entorno
+**PASO 3: Verificar que estás en la carpeta correcta**
+```cmd
+# Escribe exactamente esto:
+dir
+
+# Presiona Enter
+# Deberías ver archivos como: apache.pp, site.pp, install.bat, etc.
+```
+
+**PASO 4: Ejecutar la Instalación**
+```cmd
+# Escribe exactamente esto:
+.\install_windows_fixed.bat
+
+# Presiona Enter
+# Espera a que termine (puede tomar 5-10 minutos)
+```
+
+**PASO 5: Si hay problemas, refrescar el entorno**
+```cmd
+# Si el comando anterior falló, escribe:
 refreshenv
 
-# 5. Verificar instalación
+# Presiona Enter
+# Espera a que termine
+```
+
+**PASO 6: Verificar que Puppet se instaló correctamente**
+```cmd
+# Escribe exactamente esto:
 puppet --version
+
+# Presiona Enter
+# Deberías ver algo como: 3.8.7
+# Si ves un error, repite el PASO 5
 ```
 
 ### **PASO 2: Tu Primer Manifiesto (20 minutos)**
@@ -140,37 +181,91 @@ class apache_simple {
 include apache_simple
 ```
 
-#### **¡Ahora vamos a ejecutarlo!**
+#### **¡Ahora vamos a ejecutarlo! - INSTRUCCIONES SÚPER ESPECÍFICAS**
 
-**Para Linux:**
+**PARA LINUX - PASO A PASO:**
 ```bash
+# 1. Asegúrate de estar en la carpeta correcta
+pwd
+# Deberías ver: /ruta/a/tu/proyecto/puppet
+
+# 2. Verifica que el archivo existe
+ls -la apache.pp
+# Deberías ver: -rw-r--r-- 1 usuario grupo 1234 fecha apache.pp
+
+# 3. Ejecuta el manifiesto
 sudo puppet apply apache.pp
+# Presiona Enter
+# Espera a que termine (puede tomar 1-2 minutos)
 ```
 
-**Para Windows:**
+**PARA WINDOWS - PASO A PASO:**
 ```cmd
+# 1. Asegúrate de estar en la carpeta correcta
+pwd
+# Deberías ver: C:\xampp\htdocs\puppet
+
+# 2. Verifica que el archivo existe
+dir apache_simple.pp
+# Deberías ver: apache_simple.pp en la lista
+
+# 3. Ejecuta el manifiesto
 puppet apply apache_simple.pp
+# Presiona Enter
+# Espera a que termine (puede tomar 1-2 minutos)
+
+# 4. Si ves errores, NO te preocupes, continúa con la verificación
 ```
 
-#### **🎉 ¡MAGIA! Verifica el resultado:**
+#### **🎉 ¡MAGIA! Verifica el resultado - PASO A PASO DETALLADO:**
 
-**Para Linux:**
+**PARA LINUX - VERIFICACIÓN COMPLETA:**
 ```bash
-# Verificar que Apache está funcionando
+# PASO 1: Verificar que Apache está funcionando
 sudo systemctl status apache2
+# Presiona Enter
+# Deberías ver: "Active: active (running)" en verde
+# Si ves "Active: inactive (dead)", escribe: sudo systemctl start apache2
 
-# Probar la página web
+# PASO 2: Probar la página web desde terminal
 curl http://localhost
+# Presiona Enter
+# Deberías ver código HTML con "Mi servidor Puppet"
+
+# PASO 3: Abrir en el navegador
+# Abre tu navegador web (Chrome, Firefox, etc.)
+# Escribe en la barra de direcciones: http://localhost
+# Presiona Enter
+# Deberías ver una página con "¡Configurado automáticamente con Puppet!"
 ```
 
-**Para Windows:**
+**PARA WINDOWS - VERIFICACIÓN COMPLETA:**
 ```cmd
-# Verificar que el archivo se creó
+# PASO 1: Verificar que el archivo se creó
 dir C:\xampp\htdocs\index.html
+# Presiona Enter
+# Deberías ver: index.html en la lista con fecha de hoy
 
-# Probar la página web
+# PASO 2: Verificar que XAMPP está funcionando
+# Abre el Panel de Control de XAMPP
+# Busca "XAMPP Control Panel" en el menú de Windows
+# Verifica que Apache esté en "Running" (verde)
+# Si no está corriendo, haz clic en "Start" junto a Apache
+
+# PASO 3: Probar la página web desde terminal
 curl http://localhost/index.html
-# O abrir en el navegador: http://localhost/index.html
+# Presiona Enter
+# Deberías ver código HTML con "Mi servidor Puppet"
+
+# PASO 4: Abrir en el navegador
+# Abre tu navegador web (Chrome, Firefox, Edge, etc.)
+# Escribe en la barra de direcciones: http://localhost/index.html
+# Presiona Enter
+# Deberías ver una página bonita con gradiente azul y "¡Configurado automáticamente con Puppet!"
+
+# PASO 5: Si no funciona, probar también:
+# http://localhost (sin /index.html)
+# http://127.0.0.1/index.html
 ```
 
 ### **PASO 3: Módulo Avanzado (25 minutos)**
@@ -302,18 +397,64 @@ sudo systemctl stop nginx
 # Windows: Verificar que XAMPP Apache esté iniciado
 ```
 
-### **Problema: "Puppet command not found" (Windows)**
-```cmd
-# Solución: Refrescar el entorno después de la instalación
-refreshenv
+### **Problema: "Puppet command not found" (Windows) - SOLUCIÓN DETALLADA**
 
-# O reiniciar PowerShell como administrador
+**SÍNTOMAS:** Escribes `puppet --version` y ves: "puppet : El término 'puppet' no se reconoce..."
+
+**SOLUCIÓN PASO A PASO:**
+```cmd
+# PASO 1: Refrescar el entorno
+refreshenv
+# Presiona Enter
+# Espera a que termine (puede tomar 30 segundos)
+
+# PASO 2: Probar de nuevo
+puppet --version
+# Presiona Enter
+# Si aún no funciona, continúa al PASO 3
+
+# PASO 3: Reiniciar PowerShell como administrador
+# Cierra la ventana actual de PowerShell
+# Repite el proceso de abrir PowerShell como administrador
+# Navega de nuevo: cd C:\xampp\htdocs\puppet
+# Prueba: puppet --version
+
+# PASO 4: Si aún no funciona, reinstalar
+.\install_windows_fixed.bat
 ```
 
-### **Problema: "Invalid package provider 'chocolatey'"**
+### **Problema: "Invalid package provider 'chocolatey'" - SOLUCIÓN DETALLADA**
+
+**SÍNTOMAS:** Escribes `puppet apply apache.pp` y ves: "Invalid package provider 'chocolatey'"
+
+**SOLUCIÓN INMEDIATA:**
 ```cmd
-# Solución: Usar el manifiesto apache_simple.pp que no requiere proveedores especiales
+# NO uses apache.pp, usa apache_simple.pp en su lugar
 puppet apply apache_simple.pp
+# Presiona Enter
+# Este manifiesto NO requiere proveedores especiales
+```
+
+### **Problema: "Permission denied" - SOLUCIÓN DETALLADA**
+
+**SÍNTOMAS:** Cualquier comando que falle con "Permission denied" o "Access denied"
+
+**SOLUCIÓN PASO A PASO:**
+```cmd
+# PASO 1: Verificar que estás como administrador
+# En la ventana de PowerShell, deberías ver: "Administrador: Windows PowerShell"
+# Si NO dice "Administrador", cierra y abre de nuevo como administrador
+
+# PASO 2: Verificar permisos
+whoami
+# Presiona Enter
+# Deberías ver tu nombre de usuario
+
+# PASO 3: Si sigues teniendo problemas, ejecutar:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+# Presiona Enter
+# Escribe: Y
+# Presiona Enter
 ```
 
 ---

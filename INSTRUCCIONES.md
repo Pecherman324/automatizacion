@@ -20,58 +20,141 @@ chmod +x install.sh
 ./install.sh
 `
 
-**En Windows:**
+**En Windows - INSTRUCCIONES SÚPER DETALLADAS:**
 `cmd
-# IMPORTANTE: Ejecutar PowerShell como Administrador
-# 1. Clic derecho en PowerShell → "Ejecutar como administrador"
-# 2. Navegar al proyecto
+# PASO 1: Abrir PowerShell como Administrador
+# 1.1. Presiona la tecla Windows
+# 1.2. Escribe: PowerShell
+# 1.3. Haz clic derecho en "Windows PowerShell"
+# 1.4. Selecciona "Ejecutar como administrador"
+# 1.5. Confirma con "Sí"
+
+# PASO 2: Navegar al proyecto
 cd C:\xampp\htdocs\puppet
+# Presiona Enter
+# Deberías ver: PS C:\xampp\htdocs\puppet>
 
-# 3. Ejecutar el archivo de instalación
-.\install.bat
+# PASO 3: Verificar que estás en la carpeta correcta
+dir
+# Presiona Enter
+# Deberías ver: apache.pp, site.pp, install.bat, etc.
 
-# 4. Si hay problemas, refrescar el entorno
+# PASO 4: Ejecutar la instalación
+.\install_windows_fixed.bat
+# Presiona Enter
+# Espera 5-10 minutos
+
+# PASO 5: Si hay problemas, refrescar el entorno
 refreshenv
+# Presiona Enter
+# Espera 30 segundos
 
-# 5. Verificar instalación
+# PASO 6: Verificar instalación
 puppet --version
+# Presiona Enter
+# Deberías ver: 3.8.7
 `
 
 ### 2. Aplicar la ConfiguraciÃ³n
 
-**OpciÃ³n A - Manifiesto Simple:**
+**OpciÃ³n A - Manifiesto Simple - PASO A PASO:**
 `ash
-# Linux:
-sudo puppet apply apache.pp
+# PARA LINUX:
+# 1. Verificar que estás en la carpeta correcta
+pwd
+# Deberías ver: /ruta/a/tu/proyecto/puppet
 
-# Windows:
+# 2. Verificar que el archivo existe
+ls -la apache.pp
+# Deberías ver el archivo apache.pp
+
+# 3. Ejecutar el manifiesto
+sudo puppet apply apache.pp
+# Presiona Enter
+# Espera 1-2 minutos
+
+# PARA WINDOWS:
+# 1. Verificar que estás en la carpeta correcta
+pwd
+# Deberías ver: C:\xampp\htdocs\puppet
+
+# 2. Verificar que el archivo existe
+dir apache_simple.pp
+# Deberías ver apache_simple.pp en la lista
+
+# 3. Ejecutar el manifiesto
 puppet apply apache_simple.pp
+# Presiona Enter
+# Espera 1-2 minutos
 `
 
-**OpciÃ³n B - MÃ³dulo Completo:**
+**OpciÃ³n B - MÃ³dulo Completo - PASO A PASO:**
 `ash
-# Linux:
-sudo puppet apply site.pp
+# PARA LINUX:
+# 1. Verificar que estás en la carpeta correcta
+pwd
 
-# Windows: (Requiere ajustes adicionales)
+# 2. Verificar que el archivo existe
+ls -la site.pp
+
+# 3. Ejecutar el manifiesto
+sudo puppet apply site.pp
+# Presiona Enter
+# Espera 2-3 minutos
+
+# PARA WINDOWS: (Recomendamos usar Opción A)
+# 1. Verificar que estás en la carpeta correcta
+pwd
+
+# 2. Verificar que el archivo existe
+dir site.pp
+
+# 3. Ejecutar el manifiesto (puede dar errores)
 puppet apply site.pp
+# Presiona Enter
+# Si da errores, usa la Opción A
 `
 
 ### 3. Verificar el Resultado
 
 `ash
-# Linux: Verificar que Apache estÃ© corriendo
+# PARA LINUX - VERIFICACIÓN COMPLETA:
+# 1. Verificar que Apache está corriendo
 sudo systemctl status apache2
+# Presiona Enter
+# Deberías ver: "Active: active (running)" en verde
 
-# Linux: Probar la pÃ¡gina web
+# 2. Si Apache no está corriendo, iniciarlo
+sudo systemctl start apache2
+# Presiona Enter
+
+# 3. Probar la página web desde terminal
 curl http://localhost
+# Presiona Enter
+# Deberías ver código HTML
 
-# Windows: Verificar que el archivo se creÃ³
+# 4. Abrir en el navegador
+# Abre Chrome/Firefox y ve a: http://localhost
+
+# PARA WINDOWS - VERIFICACIÓN COMPLETA:
+# 1. Verificar que el archivo se creó
 dir C:\xampp\htdocs\index.html
+# Presiona Enter
+# Deberías ver index.html con fecha de hoy
 
-# Windows: Probar la pÃ¡gina web
+# 2. Verificar que XAMPP está funcionando
+# Abre "XAMPP Control Panel" desde el menú de Windows
+# Verifica que Apache esté en "Running" (verde)
+# Si no está corriendo, haz clic en "Start"
+
+# 3. Probar la página web desde terminal
 curl http://localhost/index.html
-# O abrir en el navegador: http://localhost/index.html
+# Presiona Enter
+# Deberías ver código HTML
+
+# 4. Abrir en el navegador
+# Abre Chrome/Firefox/Edge y ve a: http://localhost/index.html
+# Deberías ver una página bonita con gradiente azul
 `
 
 ## ðŸŽ¯ Lo que AprenderÃ¡s
