@@ -1,0 +1,39 @@
+# Archivos de configuración local
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archivos de Puppet
+.puppet/
+puppet-ssl/
+ssl/
+
+# Archivos de backup
+*.bak
+*.backup
+*.orig
+
+# Archivos temporales de instalación
+install.log
+setup.log
+
+# Archivos de configuración específicos del entorno
+local_config.pp
+environment.conf
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de sistema operativo
+*.pid
+*.lock
