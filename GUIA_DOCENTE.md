@@ -83,15 +83,61 @@ Enseñar a los estudiantes los fundamentos de la automatización de infraestruct
 ```
 
 #### **Conceptos Fundamentales (20-25 min)**
-- **Puppet como solución**: Automatización, consistencia, escalabilidad
-- **Recursos básicos**: package, service, file
-- **Dependencias**: require, notify
-- **Parámetros**: Personalización y flexibilidad
+
+**Puppet como solución:**
+Puppet es una herramienta de automatización que permite definir el estado deseado de los sistemas. En lugar de ejecutar comandos manualmente, escribes código que describe cómo quieres que esté configurado tu sistema. Puppet se encarga de hacer que el sistema coincida con esa descripción.
+
+**Recursos básicos:**
+- **package**: Instala o desinstala software. Ejemplo: `package { 'apache2': ensure => installed }`
+- **service**: Gestiona servicios del sistema. Ejemplo: `service { 'apache2': ensure => running }`
+- **file**: Crea, modifica o elimina archivos. Ejemplo: `file { '/var/www/html/index.html': content => 'contenido' }`
+
+**Dependencias:**
+- **require**: Indica que un recurso necesita que otro esté listo antes. Ejemplo: `require => Package['apache2']`
+- **notify**: Indica que cuando un recurso cambia, debe notificar a otro. Ejemplo: `notify => Service['apache2']`
+
+**Parámetros:**
+Los parámetros permiten personalizar el comportamiento de las clases. En lugar de tener código fijo, puedes pasar valores diferentes. Ejemplo: `page_title => 'Mi Sitio Web'`
 
 #### **Demostración en Vivo (10 min)**
-- Mostrar la diferencia entre configuración manual vs Puppet
-- Ejecutar `puppet apply apache.pp` en tiempo real
-- Verificar el resultado en el navegador
+
+**Mostrar la diferencia entre configuración manual vs Puppet:**
+1. **Configuración manual**: Mostrar cómo instalar Apache manualmente:
+   ```bash
+   sudo apt-get update
+   sudo apt-get install apache2
+   sudo systemctl start apache2
+   sudo systemctl enable apache2
+   echo "<html><body>Hola Mundo</body></html>" > /var/www/html/index.html
+   ```
+   Explicar que esto toma tiempo y es propenso a errores.
+
+2. **Configuración con Puppet**: Mostrar el manifiesto `apache.pp`:
+   ```puppet
+   class apache_example {
+     package { 'apache2': ensure => installed }
+     service { 'apache2': 
+       ensure => running,
+       enable => true,
+       require => Package['apache2']
+     }
+     file { '/var/www/html/index.html':
+       content => '<html><body>¡Configurado con Puppet!</body></html>',
+       require => Package['apache2']
+     }
+   }
+   include apache_example
+   ```
+
+**Ejecutar `puppet apply apache.pp` en tiempo real:**
+- Mostrar cómo Puppet instala Apache automáticamente
+- Explicar los mensajes que aparecen en pantalla
+- Destacar la velocidad y precisión del proceso
+
+**Verificar el resultado en el navegador:**
+- Abrir `http://localhost` en el navegador
+- Mostrar la página web creada automáticamente
+- Explicar que esto se puede repetir en cualquier servidor
 
 ### **FASE 2: PRÁCTICA GUIADA (60-90 min)**
 
@@ -133,15 +179,81 @@ refreshenv
 #### **Paso 2: Primer Manifiesto (20 min) - INSTRUCCIONES ESPECÍFICAS PARA EL DOCENTE**
 
 **PARA ESTUDIANTES CON LINUX:**
-- Explicar `apache.pp` línea por línea
-- Ejecutar: `sudo puppet apply apache.pp`
-- Verificar resultado: `curl http://localhost`
+
+**Explicar `apache.pp` línea por línea:**
+```puppet
+class apache_example {
+  # Línea 1: Instalar el paquete Apache
+  package { 'apache2':
+    ensure => installed,  # Asegurar que esté instalado
+  }
+
+  # Línea 2: Configurar el servicio Apache
+  service { 'apache2':
+    ensure     => running,  # Asegurar que esté corriendo
+    enable     => true,     # Habilitar para que inicie automáticamente
+    require    => Package['apache2'],  # Esperar a que el paquete esté instalado
+  }
+
+  # Línea 3: Crear la página web
+  file { '/var/www/html/index.html':
+    ensure  => file,  # Asegurar que sea un archivo
+    content => "<html>
+  <head><title>Mi servidor Puppet</title></head>
+  <body><h1>¡Configurado automáticamente con Puppet!</h1></body>
+</html>",
+    require => Package['apache2'],  # Esperar a que Apache esté instalado
+  }
+}
+
+# Aplicar la clase
+include apache_example
+```
+
+**Ejecutar:** `sudo puppet apply apache.pp`
+**Verificar resultado:** `curl http://localhost`
 
 **PARA ESTUDIANTES CON WINDOWS:**
-- Explicar `apache_simple.pp` línea por línea
-- Enfatizar que NO instala paquetes, solo crea archivos
-- Ejecutar: `puppet apply apache_simple.pp`
-- Verificar resultado: `curl http://localhost/index.html`
+
+**Explicar `apache_simple.pp` línea por línea:**
+```puppet
+class apache_simple {
+  # Crear una página web personalizada en XAMPP
+  file { 'C:/xampp/htdocs/index.html':
+    ensure  => file,  # Asegurar que sea un archivo
+    content => "<!DOCTYPE html>
+<html lang='es'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Mi servidor Puppet</title>
+    <style>
+        body { font-family: Arial; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .container { background: white; padding: 40px; border-radius: 15px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <h1>¡Configurado automáticamente con Puppet!</h1>
+        <p>Servidor: Apache HTTP Server (XAMPP)</p>
+        <p>Estado: ✅ Funcionando correctamente</p>
+    </div>
+</body>
+</html>",
+  }
+}
+
+# Aplicar la clase
+include apache_simple
+```
+
+**Enfatizar que NO instala paquetes, solo crea archivos:**
+- Este manifiesto asume que XAMPP ya está instalado
+- Solo crea el archivo `index.html` en la carpeta de XAMPP
+- No necesita permisos especiales para instalar software
+- Es más seguro y rápido para entornos educativos
+
+**Ejecutar:** `puppet apply apache_simple.pp`
+**Verificar resultado:** `curl http://localhost/index.html`
 
 **PUNTOS CLAVE PARA EL DOCENTE:**
 - ✅ Usar el manifiesto correcto según el sistema operativo
@@ -150,26 +262,150 @@ refreshenv
 - ✅ Mostrar cómo abrir el Panel de Control de XAMPP
 
 #### **Paso 3: Módulo Avanzado (25 min)**
-- Explorar la estructura del módulo
-- Explicar parámetros y personalización
-- Modificar `site.pp` con diferentes valores
-- Ejecutar: `sudo puppet apply site.pp`
+
+**Explorar la estructura del módulo:**
+```
+modules/apache_example/
+├── manifests/
+│   └── init.pp          # La clase principal del módulo
+├── templates/           # Plantillas ERB para archivos dinámicos
+└── files/              # Archivos estáticos que se copian
+```
+
+**Explicar parámetros y personalización:**
+El módulo `apache_example` acepta parámetros que permiten personalizar el comportamiento:
+
+```puppet
+class apache_example (
+  String $page_title = 'Mi servidor Puppet',           # Título de la página
+  String $page_content = '¡Configurado automáticamente con Puppet!',  # Contenido
+  String $ensure_service = 'running',                  # Estado del servicio
+  Boolean $enable_service = true,                      # Si se inicia automáticamente
+) {
+  # El código usa estas variables: $page_title, $page_content, etc.
+}
+```
+
+**Modificar `site.pp` con diferentes valores:**
+```puppet
+# Configuración por defecto
+node default {
+  class { 'apache_example':
+    page_title    => 'Servidor Web Corporativo',
+    page_content  => '¡Bienvenido a nuestro servidor configurado con Puppet!',
+    ensure_service => 'running',
+    enable_service => true,
+  }
+}
+
+# Configuración para desarrollo
+node 'dev-server' {
+  class { 'apache_example':
+    page_title    => 'Servidor de Desarrollo',
+    page_content  => 'Entorno de desarrollo - Configurado con Puppet',
+    ensure_service => 'running',
+    enable_service => true,
+  }
+}
+```
+
+**Ejecutar:** `sudo puppet apply site.pp`
 
 #### **Paso 4: Verificación y Troubleshooting (15 min)**
-- Verificar servicios: `systemctl status apache2`
-- Revisar logs si hay problemas
-- Probar la página web en el navegador
+
+**Verificar servicios:**
+```bash
+# Linux: Verificar que Apache está funcionando
+sudo systemctl status apache2
+# Deberías ver: "Active: active (running)" en verde
+
+# Windows: Verificar XAMPP
+# Abrir XAMPP Control Panel
+# Verificar que Apache esté en "Running" (verde)
+```
+
+**Revisar logs si hay problemas:**
+```bash
+# Linux: Ver logs de Apache
+sudo journalctl -u apache2
+sudo tail -f /var/log/apache2/error.log
+
+# Windows: Ver logs de XAMPP
+# Ir a C:\xampp\apache\logs\error.log
+```
+
+**Probar la página web en el navegador:**
+- **Linux:** Abrir `http://localhost` en el navegador
+- **Windows:** Abrir `http://localhost/index.html` en el navegador
+- Verificar que se muestra la página personalizada
+- Explicar que esto demuestra que Puppet funcionó correctamente
 
 ### **FASE 3: EJERCICIOS PRÁCTICOS (30-45 min)**
 
 #### **Ejercicio 1: Personalización Básica**
-Modificar el título y contenido de la página web
+**Objetivo:** Modificar el título y contenido de la página web
+
+**Instrucciones para los estudiantes:**
+1. Abrir el archivo `site.pp`
+2. Cambiar los valores de `page_title` y `page_content`:
+   ```puppet
+   class { 'apache_example':
+     page_title    => 'MI SITIO WEB PERSONAL',
+     page_content  => '¡Hola! Este es mi servidor configurado con Puppet',
+     ensure_service => 'running',
+     enable_service => true,
+   }
+   ```
+3. Ejecutar: `sudo puppet apply site.pp`
+4. Verificar en el navegador que los cambios se aplicaron
 
 #### **Ejercicio 2: Configuración de Múltiples Nodos**
-Crear configuraciones diferentes para desarrollo y producción
+**Objetivo:** Crear configuraciones diferentes para desarrollo y producción
+
+**Instrucciones para los estudiantes:**
+1. Modificar `site.pp` para tener dos configuraciones:
+   ```puppet
+   # Configuración para desarrollo
+   node 'dev-server' {
+     class { 'apache_example':
+       page_title    => 'Servidor de Desarrollo - [Tu Nombre]',
+       page_content  => 'Entorno de desarrollo - Configurado con Puppet',
+       ensure_service => 'running',
+       enable_service => true,
+     }
+   }
+
+   # Configuración para producción
+   node 'prod-server' {
+     class { 'apache_example':
+       page_title    => 'Servidor de Producción - [Tu Nombre]',
+       page_content  => 'Sistema de producción - Configurado con Puppet',
+       ensure_service => 'running',
+       enable_service => true,
+     }
+   }
+   ```
+2. Explicar cómo Puppet puede aplicar configuraciones diferentes según el nodo
 
 #### **Ejercicio 3: Extensión del Módulo**
-Agregar un nuevo recurso (ej: crear un directorio adicional)
+**Objetivo:** Agregar un nuevo recurso (ej: crear un directorio adicional)
+
+**Instrucciones para los estudiantes:**
+1. Modificar el módulo para agregar un directorio:
+   ```puppet
+   # Agregar esto dentro de la clase apache_example
+   file { '/var/www/html/mi-carpeta':
+     ensure => directory,
+     owner  => 'www-data',
+     group  => 'www-data',
+     mode   => '0755',
+   }
+   ```
+2. Explicar los parámetros:
+   - `ensure => directory`: Crear un directorio
+   - `owner` y `group`: Propietario del directorio
+   - `mode`: Permisos (0755 = lectura, escritura, ejecución para propietario; lectura y ejecución para otros)
+3. Ejecutar el manifiesto y verificar que se creó el directorio
 
 ---
 
